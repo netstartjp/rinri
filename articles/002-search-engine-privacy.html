@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【第2回】検索エンジンは何を収集するのか？ プライバシーを守る検索方法 | 運営者倫理アライアンス</title>
+    <meta name="description" content="GoogleやBingなどの検索エンジンが収集する情報と、今すぐ実践できるプライバシー対策を解説。DuckDuckGoやStartpageへの切り替え方、Google/Bingでの設定方法も紹介。">
+    <!-- Canonical -->
+    <link rel="canonical" href="https://rinri.zssu.me/articles/002-search-engine-privacy.html">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            800: '#065f46',
+                        },
+                        navy: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            50: '#f8fafc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 90%);
+        }
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #10b981;
+        }
+        .article-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .article-content p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        .article-content ul, .article-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #334155;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        .article-content ul li {
+            list-style-type: disc;
+        }
+        .article-content ol li {
+            list-style-type: decimal;
+        }
+        .article-content a {
+            color: #059669;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .article-content a:hover {
+            color: #10b981;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #10b981;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #475569;
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .article-content strong {
+            color: #0f172a;
+        }
+        .article-content .data-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .article-content .data-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .article-content .engine-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        .article-content .engine-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #10b981;
+        }
+        .step-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .step-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: #059669;
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-navy-50 text-navy-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- ヘッダー / ナビゲーション -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-navy-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-11 h-11 rounded-xl shadow-md object-contain border border-navy-100 bg-white p-0.5">
+                    <div>
+                        <a href="../index.html" class="text-lg font-bold text-navy-900 tracking-wider block leading-tight hover:text-brand-600 transition-colors">運営者倫理アライアンス</a>
+                        <span class="text-xs text-navy-600 block tracking-widest font-semibold uppercase">Operator Ethics Alliance</span>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-8 text-sm font-semibold text-navy-700">
+                    <a href="../index.html#about" class="hover:text-brand-600 transition-colors py-2">概要</a>
+                    <a href="../index.html#charter" class="hover:text-brand-600 transition-colors py-2">倫理憲章</a>
+                    <a href="../index.html" class="text-brand-600 border-b-2 border-brand-600 py-2">記事</a>
+                    <a href="../index.html#members" class="hover:text-brand-600 transition-colors py-2">参加団体</a>
+                    <a href="../index.html#join" class="hover:text-brand-600 transition-colors py-2">アライアンス参加</a>
+                </nav>
+                <div class="hidden md:flex">
+                    <a href="../index.html#join" class="bg-navy-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all duration-300">
+                        アライアンスに加入する
+                    </a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-navy-700 hover:text-brand-600 focus:outline-none" aria-label="メニューを開く">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-navy-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="../index.html#about" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">概要</a>
+            <a href="../index.html#charter" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">倫理憲章</a>
+            <a href="../index.html" class="block px-3 py-2.5 rounded-md text-brand-600 bg-brand-50 font-medium">記事</a>
+            <a href="../index.html#members" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">参加団体</a>
+            <a href="../index.html#join" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">アライアンス参加</a>
+            <div class="pt-2">
+                <a href="../index.html#join" class="block text-center bg-navy-900 hover:bg-brand-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all">
+                    アライアンスに加入する
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <!-- 記事ヘッダー -->
+        <section class="gradient-bg text-white py-16 lg:py-20 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-100 border border-brand-500/30">
+                            <i data-lucide="search" class="w-3.5 h-3.5 mr-1.5"></i>検索プライバシー
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-navy-200 border border-white/20">
+                            第2回
+                        </span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        検索エンジンは<br class="hidden sm:inline">
+                        あなたの何を知っているのか？
+                    </h1>
+                    <p class="text-lg sm:text-xl text-navy-200 max-w-2xl leading-relaxed">
+                        当たり前に使っている「検索」という行為。知らないうちに大量の個人情報が収集されている現実と、その対策を徹底解説します。
+                    </p>
+                    <div class="flex items-center gap-4 text-sm text-navy-200">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            2026年5月27日
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            約7分で読めます
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 記事本文 -->
+        <section class="py-12 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 article-content">
+
+                <!-- 目次 -->
+                <div class="bg-navy-50 border border-navy-200 rounded-xl p-6 mb-8">
+                    <h3 class="text-sm font-bold text-navy-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="list" class="w-4 h-4 text-brand-600"></i>
+                        目次
+                    </h3>
+                    <ol class="space-y-1.5 text-sm">
+                        <li><a href="#intro" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">はじめに：「無料」の代償</a></li>
+                        <li><a href="#what-is-collected" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">検索エンジンは何を収集しているのか？</a></li>
+                        <li><a href="#google-settings" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Google検索でできるプライバシー設定</a></li>
+                        <li><a href="#bing-settings" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Bing（Microsoft）でできるプライバシー設定</a></li>
+                        <li><a href="#duckduckgo" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">プライバシー重視の代替①：DuckDuckGo</a></li>
+                        <li><a href="#startpage" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">プライバシー重視の代替②：Startpage</a></li>
+                        <li><a href="#comparison" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">主要検索エンジンのプライバシー比較</a></li>
+                        <li><a href="#tips" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">検索プライバシーを高めるその他のヒント</a></li>
+                        <li><a href="#conclusion" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">まとめ：検索の自由とプライバシーは両立できる</a></li>
+                    </ol>
+                </div>
+
+                <!-- 1. はじめに -->
+                <h2 id="intro">はじめに：「無料」の代償</h2>
+                <p>
+                    Google、Bing、Yahoo!――私たちは日常的に何気なく検索エンジンを使い、1日に何度もキーワードを入力しています。
+                    しかし、その「何気ない1回の検索」の裏側で、想像以上に多くの情報が収集・記録されていることをご存知でしょうか？
+                </p>
+                <p>
+                    検索エンジンは、検索結果を表示するためだけでなく、<strong>あなたという人間を理解するため</strong>に検索履歴を活用しています。
+                    検索クエリには、あなたの悩み、興味、購買意図、健康状態、人間関係、政治的信条といった極めてプライベートな情報が
+                    含まれています。まさに「検索履歴はあなたの心の日記」とも言えるのです。
+                </p>
+                <p>
+                    この記事では、検索エンジンが収集している情報の実態を明らかにし、GoogleやBingを使い続けながらでもできる対策、
+                    そしてプライバシーを最優先に設計された代替検索エンジン（DuckDuckGo、Startpage）への移行方法を詳しく紹介します。
+                </p>
+
+                <!-- 2. 何を収集しているのか -->
+                <h2 id="what-is-collected">検索エンジンは何を収集しているのか？</h2>
+                <p>
+                    まずは「敵を知る」ことから始めましょう。GoogleやBingがあなたの検索を通じて収集している主な情報は以下の通りです。
+                    これらは各社のプライバシーポリシーに明記されているものであり、推測ではなく事実です。
+                </p>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="search" class="w-5 h-5 text-brand-600"></i>
+                        1. 検索クエリ（検索語句）
+                    </h3>
+                    <p class="text-sm">あなたが入力したすべての検索キーワードが記録されます。検索した日時、使用したデバイス、場所情報と紐づけて保存されます。</p>
+                </div>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-brand-600"></i>
+                        2. 位置情報（IPアドレス・GPS）
+                    </h3>
+                    <p class="text-sm">IPアドレスからおおよその位置が特定されます。さらに、スマートフォンから検索した場合はGPS情報も収集され、「〇〇駅 ランチ」といった検索が可能になっています。</p>
+                </div>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="mouse-pointer-click" class="w-5 h-5 text-brand-600"></i>
+                        3. クリック行動（どの検索結果を選んだか）
+                    </h3>
+                    <p class="text-sm">検索結果の何番目をクリックしたか、クリック後にどのサイトを見たか、そこでどれだけ滞在したかも記録されています。これにより「検索結果の質」と「あなたの興味」が分析されます。</p>
+                </div>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="smartphone" class="w-5 h-5 text-brand-600"></i>
+                        4. デバイス情報とブラウザ情報
+                    </h3>
+                    <p class="text-sm">使用しているOS、ブラウザの種類とバージョン、画面解像度、インストール言語などが収集され、デバイスの「指紋」として利用されます。</p>
+                </div>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="cookie" class="w-5 h-5 text-brand-600"></i>
+                        5. Cookie と トラッキングデータ
+                    </h3>
+                    <p class="text-sm">検索エンジンが発行するCookieにより、あなたがGoogleやBingにログインしていなくても、過去の検索履歴と紐づけられます。これにより「一貫性のある検索体験」と「ターゲット広告」が実現されています。</p>
+                </div>
+
+                <div class="data-box">
+                    <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="audio-lines" class="w-5 h-5 text-brand-600"></i>
+                        6. 音声検索の録音データ
+                    </h3>
+                    <p class="text-sm">Googleアシスタントや音声検索を使った場合、あなたの音声が録音・分析されます。これにより話し方や声のトーンからも情報が抽出される可能性があります。</p>
+                </div>
+
+                <blockquote>
+                    <strong>これらのデータが何に使われるのか：</strong><br>
+                    • パーソナライズド検索結果の表示<br>
+                    • 行動ターゲティング広告（あなたの興味に合わせた広告）<br>
+                    • 検索エンジンの品質改善（機械学習の訓練データ）<br>
+                    • 法執行機関へのデータ提供（令状に基づく）<br>
+                    • あなたの「プロファイリング」――性別、年齢層、収入層、政治的信条などの推定
+                </blockquote>
+
+                <!-- 3. Googleの設定 -->
+                <h2 id="google-settings">Google検索でできるプライバシー設定</h2>
+                <p>
+                    「Google検索の利便性は捨てがたい」という方のために、今すぐ使っているGoogleアカウントでできるプライバシー設定を紹介します。
+                    以下の設定を行うことで、最低限のデータ収集を抑制できます。
+                </p>
+
+                <h3>1. 検索履歴の一時停止（最も効果的）</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Google アクティビティ管理ページにアクセス</strong>
+                            <p class="mb-0 text-sm">
+                                ブラウザで <a href="https://myactivity.google.com/" target="_blank" rel="noopener noreferrer">https://myactivity.google.com/</a> にアクセスします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「ウェブ＆アプリのアクティビティ」を一時停止</strong>
+                            <p class="mb-0 text-sm">
+                                画面上部の「アクティビティ管理」をクリック。「ウェブ＆アプリのアクティビティ」の横にあるトグルスイッチをオフにします。
+                                これにより、Google検索の履歴が保存されなくなります。
+                            </p>
+                            <p class="text-xs text-navy-500 mt-1">※これ以降の検索履歴は保存されませんが、過去の履歴は残ったままです。過去のデータも削除したい場合は次の手順へ。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">過去のデータを自動削除する設定にする</strong>
+                            <p class="mb-0 text-sm">
+                                同じ「アクティビティ管理」画面で「自動削除」を選択し、「3ヶ月」または「18ヶ月」を選びます。
+                                3ヶ月を選べば、古いデータは自動的に消去され続けます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「位置情報の履歴」と「YouTubeの履歴」も同様に停止</strong>
+                            <p class="mb-0 text-sm">
+                                同じ管理画面で「位置情報の履歴」と「YouTubeの履歴」もオフにしておくことを強く推奨します。
+                                検索履歴だけでなく、これらのデータも組み合わさることで強力なプロファイルが作られます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>2. 広告のパーソナライズをオフにする</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Google 広告設定ページにアクセス</strong>
+                            <p class="mb-0 text-sm">
+                                <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer">https://adssettings.google.com/</a> を開きます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「広告のパーソナライズ」をオフにする</strong>
+                            <p class="mb-0 text-sm">
+                                画面上部の「広告のパーソナライズ」のトグルスイッチをオフにします。
+                                これにより、あなたの検索履歴や興味に基づいたターゲティング広告が表示されなくなります。
+                                広告自体は表示されますが、無関係なものになります。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>3. シークレットモード/プライベートブラウジングを使う</h3>
+                <p>
+                    ログイン状態に関係なく、<strong>シークレットモード（Chrome）またはInPrivateブラウジング（Edge）</strong>で検索を行うと、
+                    そのセッションの検索履歴はブラウザに保存されません。ただし、Google側でのトラッキングを完全に防げるわけではないことに注意が必要です。
+                    シークレットモードは「ブラウザに履歴を残さない」だけであり、Googleが収集するデータ量を減らす効果は限定的です。
+                </p>
+
+                <!-- 4. Bingの設定 -->
+                <h2 id="bing-settings">Bing（Microsoft）でできるプライバシー設定</h2>
+                <p>
+                    Microsoftもまた、Bingの検索データを広告や製品改善に活用しています。以下の設定でデータ収集を抑制しましょう。
+                </p>
+
+                <h3>1. Microsoft プライバシーダッシュボードで検索履歴を管理</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Microsoft プライバシーダッシュボードにアクセス</strong>
+                            <p class="mb-0 text-sm">
+                                <a href="https://account.microsoft.com/privacy/" target="_blank" rel="noopener noreferrer">https://account.microsoft.com/privacy/</a> を開き、Microsoftアカウントでログインします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「検索履歴の管理」からデータを削除</strong>
+                            <p class="mb-0 text-sm">
+                                「プライバシーダッシュボード」→「検索履歴」→「すべての検索履歴をクリア」で過去の検索データを削除できます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">新しい検索データが保存されないようにする</strong>
+                            <p class="mb-0 text-sm">
+                                同じプライバシーダッシュボードで「広告ID」の設定をオフにします。
+                                また、Microsoft Edgeの設定 → 「プライバシー、検索、サービス」→ 「トラッキング防止」を「厳密」に設定し、
+                                「検索とサービスに関する個人設定」をオフにすることで、Bingの検索データが個人設定に使われるのを防げます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>2. Bingでプライベートモードを使う</h3>
+                <p>
+                    Bingには「プライベートモード」と呼ばれる機能があります。
+                    Bing.com の右上のプロフィールアイコン付近から「プライベートモード」をオンにすると、
+                    そのセッションの検索履歴はMicrosoftアカウントに保存されなくなります。
+                    ただし、完全な匿名性を保証するものではないので注意しましょう。
+                </p>
+
+                <!-- 5. DuckDuckGo -->
+                <h2 id="duckduckgo">プライバシー重視の代替①：DuckDuckGo</h2>
+                <p>
+                    「設定をいじるだけでは限界がある」「もっと根本的にプライバシーを守りたい」という方におすすめなのが、
+                    プライバシーを最優先に設計された検索エンジンへの乗り換えです。まずは<strong>DuckDuckGo</strong>から紹介します。
+                </p>
+
+                <div class="engine-card">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <span class="text-xl font-bold">DDG</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-navy-900">DuckDuckGo</h3>
+                            <p class="text-xs text-navy-500 mb-2">公式サイト：<a href="https://duckduckgo.com/" target="_blank" rel="noopener noreferrer" class="font-semibold">https://duckduckgo.com/</a></p>
+                            <p class="text-sm">
+                                DuckDuckGo（ダックダックゴー）は、<strong>ユーザーの検索履歴を一切保存しない</strong>という明確なポリシーを掲げる検索エンジンです。
+                                検索クエリ、IPアドレス、ブラウザ情報など一切の個人データを記録せず、検索結果はすべてのユーザーに同一に表示されます。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-navy-100 space-y-2">
+                        <h4 class="text-sm font-bold text-navy-900">主な特徴</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><strong>✓ 検索履歴を保存しない</strong> — あなたが何を検索したか、DuckDuckGoは知りません</li>
+                            <li><strong>✓ トラッキング防止</strong> — 検索結果ページに埋め込まれたトラッカーを自動的にブロック</li>
+                            <li><strong>✓ 「!bang」ショートカット</strong> — <code>!g 検索ワード</code> でGoogle検索、<code>!yt 検索ワード</code> でYouTube検索など、400以上のサイトに直接ジャンプ可能</li>
+                            <li><strong>✓ プライバシーグレード評価</strong> — 訪問したサイトのプライバシー保護レベルをA～Fで表示</li>
+                            <li><strong>✓ 無料</strong> — 完全無料で利用できます（収入は広告によるものですが、行動ターゲティング広告ではありません）</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-navy-100">
+                        <h4 class="text-sm font-bold text-navy-900 mb-2">利用を始める方法</h4>
+                        <p class="text-sm">
+                            DuckDuckGoはアカウント登録不要です。ブラウザの検索エンジン設定を変更するか、
+                            <a href="https://duckduckgo.com/" target="_blank" rel="noopener noreferrer">DuckDuckGo公式サイト</a>にアクセスするだけで即座に使い始められます。
+                            Firefox、Chrome、EdgeにはDuckDuckGoをデフォルト検索エンジンに設定する機能が標準で備わっています。
+                        </p>
+                        <p class="text-sm mt-2">
+                            <strong>ブラウザごとの設定手順：</strong><br>
+                            <strong>Firefox：</strong>設定 → 「検索」 → デフォルトの検索エンジンを「DuckDuckGo」に変更<br>
+                            <strong>Chrome：</strong>設定 → 「検索エンジン」 → 「検索エンジンの管理」 → DuckDuckGoを選択<br>
+                            <strong>Edge：</strong>設定 → 「プライバシー、検索、サービス」 → 「アドレスバーと検索」 → DuckDuckGoを選択
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 6. Startpage -->
+                <h2 id="startpage">プライバシー重視の代替②：Startpage</h2>
+                <p>
+                    もう一つの有力な選択肢が<strong>Startpage</strong>です。Startpageは「プライバシーを守りつつ、Googleの検索結果を使いたい」というニーズに応えるサービスです。
+                </p>
+
+                <div class="engine-card">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <span class="text-xl font-bold">SP</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-navy-900">Startpage</h3>
+                            <p class="text-xs text-navy-500 mb-2">公式サイト：<a href="https://www.startpage.com/" target="_blank" rel="noopener noreferrer" class="font-semibold">https://www.startpage.com/</a></p>
+                            <p class="text-sm">
+                                Startpage（スタートページ）は、<strong>Googleの検索結果をプライバシー保護フィルターを通して提供する</strong>検索エンジンです。
+                                つまり、Googleと同等の検索品質を保ちながら、あなたの個人情報がGoogleに渡らないように仲介してくれます。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-navy-100 space-y-2">
+                        <h4 class="text-sm font-bold text-navy-900">主な特徴</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><strong>✓ Googleの検索結果を匿名で利用</strong> — IPアドレスを匿名化し、あなたを特定できない形でGoogleに検索クエリを送信</li>
+                            <li><strong>✓ 検索履歴を保存しない</strong> — あなたの検索履歴、クリック履歴、個人データは一切保存されません</li>
+                            <li><strong>✓ 「匿名表示」機能</strong> — 検索結果のリンクをクリックすると、Startpageのプロキシサーバー経由でサイトを閲覧でき、あなたのIPアドレスが訪問先のサイトに知られるのを防ぎます（アイコンに目のマークが付いているリンクが対象）</li>
+                            <li><strong>✓ オランダ拠点の独立企業</strong> — 米国法（特にFISA監視法）の適用を受けないオランダに本社を置く独立企業が運営</li>
+                            <li><strong>✓ 無料</strong> — 完全無料で利用可能（プライベート検索の収益は広告とプライベート検索APIのライセンスによる）</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-navy-100">
+                        <h4 class="text-sm font-bold text-navy-900 mb-2">利用を始める方法</h4>
+                        <p class="text-sm">
+                            Startpageもアカウント登録不要です。<a href="https://www.startpage.com/" target="_blank" rel="noopener noreferrer">Startpage公式サイト</a>にアクセスするか、
+                            ブラウザの検索エンジン設定にStartpageを追加してご利用ください。
+                            各ブラウザへの追加方法はStartpageのサイトに詳しいガイドがあります。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 7. 比較 -->
+                <h2 id="comparison">主要検索エンジンのプライバシー比較</h2>
+                <p>
+                    ここで、主要な検索エンジンをプライバシーの観点から比較してみましょう。
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse bg-white rounded-xl overflow-hidden shadow-sm border border-navy-200">
+                        <thead>
+                            <tr class="bg-navy-900 text-white">
+                                <th class="p-3 text-left font-bold">検索エンジン</th>
+                                <th class="p-3 text-left font-bold">履歴保存</th>
+                                <th class="p-3 text-left font-bold">トラッキング</th>
+                                <th class="p-3 text-left font-bold">検索品質</th>
+                                <th class="p-3 text-left font-bold">匿名表示</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-navy-100">
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">Google</td>
+                                <td class="p-3 text-red-600 font-semibold">保存する</td>
+                                <td class="p-3 text-red-600 font-semibold">強い</td>
+                                <td class="p-3 text-green-600 font-semibold">最高</td>
+                                <td class="p-3 text-red-600 font-semibold">なし</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">Bing</td>
+                                <td class="p-3 text-red-600 font-semibold">保存する</td>
+                                <td class="p-3 text-red-600 font-semibold">強い</td>
+                                <td class="p-3 text-green-600 font-semibold">高い</td>
+                                <td class="p-3 text-red-600 font-semibold">なし</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">DuckDuckGo</td>
+                                <td class="p-3 text-green-600 font-semibold">保存しない</td>
+                                <td class="p-3 text-green-600 font-semibold">ブロック</td>
+                                <td class="p-3 text-yellow-600 font-semibold">良好</td>
+                                <td class="p-3 text-yellow-600 font-semibold">限定的</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50 bg-brand-50">
+                                <td class="p-3 font-bold text-brand-600">Startpage</td>
+                                <td class="p-3 text-green-600 font-semibold">保存しない</td>
+                                <td class="p-3 text-green-600 font-semibold">ブロック</td>
+                                <td class="p-3 text-green-600 font-semibold">最高（Google）</td>
+                                <td class="p-3 text-green-600 font-semibold">あり</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-navy-500 mt-2">
+                    ※Googleは最高の検索品質を提供しますが、プライバシー面では最大のリスクがあります。
+                    検索品質とプライバシーのバランスを取るなら<strong>Startpage</strong>、シンプルに切り替えるなら<strong>DuckDuckGo</strong>がおすすめです。
+                </p>
+
+                <!-- 8. その他のヒント -->
+                <h2 id="tips">検索プライバシーを高めるその他のヒント</h2>
+                <p>
+                    検索エンジンの変更以外にも、以下の方法で検索プライバシーを高めることができます。
+                </p>
+                <ul>
+                    <li><strong>ログアウトして検索する</strong>：GoogleやBingにログインしたまま検索すると、検索履歴がアカウントに紐づきます。重要な検索をするときは、一度ログアウトしてから検索しましょう。</li>
+                    <li><strong>VPNを使用する</strong>：VPNを使うと、あなたのIPアドレスが隠蔽され、検索エンジンが位置情報を特定しにくくなります。ただし、VPNプロバイダ自体がログを取得していないか確認が必要です。</li>
+                    <li><strong>ブラウザのプライバシー設定を見直す</strong>：前回の記事（<a href="001-tracking-prevention.html">トラッキングを防ぐには？</a>）で紹介したFirefox + uBlock Originの組み合わせは、検索時のトラッキング対策としても非常に効果的です。</li>
+                    <li><strong>シークレットモードを活用する</strong>：完全な対策にはなりませんが、他人と共有している端末で検索する場合など、最低限の保護として有効です。</li>
+                    <li><strong>検索エンジンをデフォルトでDuckDuckGoまたはStartpageに設定する</strong>：一度設定してしまえば、アドレスバーから検索するだけで自動的にプライバシー保護された検索が行われます。</li>
+                </ul>
+
+                <blockquote>
+                    <strong>プライバシーと利便性のトレードオフについて：</strong><br>
+                    プライバシーを重視する検索エンジン（DuckDuckGoやStartpage）では、パーソナライズド検索結果が表示されません。
+                    これは「あなたの検索履歴を元に結果を最適化しない」というプライバシー保護の姿勢の表れです。
+                    「検索結果が以前と違う」と感じるかもしれませんが、それはすべてのユーザーに対して公平な結果を表示しているからです。
+                    最初は違和感があるかもしれませんが、数日使えば十分な検索品質であることに気づくはずです。
+                </blockquote>
+
+                <!-- 9. まとめ -->
+                <h2 id="conclusion">まとめ：検索の自由とプライバシーは両立できる</h2>
+                <p>
+                    この記事では、検索エンジンが収集する情報の実態と、具体的な対策を3つのレベルで解説しました：
+                </p>
+                <ol>
+                    <li><strong>Google / Bing の設定を変更する</strong> — アクティビティ管理から履歴保存を停止、自動削除を設定、広告のパーソナライズをオフにする</li>
+                    <li><strong>プライバシー重視の検索エンジンに切り替える</strong>
+                        <ul>
+                            <li><a href="https://duckduckgo.com/" target="_blank" rel="noopener noreferrer">DuckDuckGo（ダックダックゴー）</a> — シンプルで強力なプライバシー保護。履歴もトラッキングも一切なし</li>
+                            <li><a href="https://www.startpage.com/" target="_blank" rel="noopener noreferrer">Startpage（スタートページ）</a> — Googleの検索品質をプライベートに利用。匿名表示機能も搭載</li>
+                        </ul>
+                    </li>
+                    <li><strong>補完的な対策</strong> — VPNの活用、ログアウトしての検索、uBlock Originとの併用</li>
+                </ol>
+                <p>
+                    検索エンジンは私たちの「知りたい」を叶えてくれる便利な道具です。しかし、その利便性の代償として、知らないうちに個人情報を提供し続けている現実があります。
+                    この記事で紹介した対策のうち、どれか一つでも実践していただければ、あなたのプライバシーは確実に向上します。
+                </p>
+                <p>
+                    まずは <a href="https://duckduckgo.com/" target="_blank" rel="noopener noreferrer">DuckDuckGo</a> または <a href="https://www.startpage.com/" target="_blank" rel="noopener noreferrer">Startpage</a> を一度試してみてください。
+                    ブラウザの設定変更だけで、今日からあなたの検索は「誰にも追跡されない検索」に変わります。
+                </p>
+                <p class="text-sm text-navy-500 border-t border-navy-200 pt-4 mt-8">
+                    文責：運営者倫理アライアンス（OEA） 編集部<br>
+                    公開：2026年5月27日
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-navy-900 text-white border-t border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-9 h-9 rounded-lg object-contain bg-white p-0.5">
+                        <span class="text-base font-bold text-white tracking-wider">運営者倫理アライアンス</span>
+                    </div>
+                    <p class="text-xs text-navy-300 leading-relaxed max-w-sm">
+                        OEAは、多様化するインターネットサービスにおいて、開発者や事業者が利用者の尊厳、プライバシー、持続可能性に責任を持つ世界を目指します。
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">ナビゲーション</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><a href="../index.html#about" class="hover:text-white transition-colors">概要</a></li>
+                        <li><a href="../index.html#charter" class="hover:text-white transition-colors">倫理憲章</a></li>
+                        <li><a href="../index.html" class="hover:text-white transition-colors">記事一覧</a></li>
+                        <li><a href="../index.html#members" class="hover:text-white transition-colors">参加企業・団体</a></li>
+                        <li><a href="../index.html#join" class="hover:text-white transition-colors">アライアンス加入</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">お問い合わせ・リンク</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><span class="block">運営者倫理アライアンス 事務局</span></li>
+                        <li><span class="block">初回制定：2026年5月27日</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-navy-800 text-center text-xs text-navy-400">
+                &copy; 2026 Operator Ethics Alliance (OEA). All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

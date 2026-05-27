@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【初回記事】トラッキングを防ぐには？ 手軽な方法でプライバシーを守る | 運営者倫理アライアンス</title>
+    <meta name="description" content="ネット上での行動追跡（トラッキング）から身を守るための最も手軽な方法として、FirefoxとuBlock Originを使った対策を紹介します。">
+    <!-- Canonical -->
+    <link rel="canonical" href="https://rinri.zssu.me/articles/001-tracking-prevention.html">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            800: '#065f46',
+                        },
+                        navy: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            50: '#f8fafc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 90%);
+        }
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #10b981;
+        }
+        .article-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .article-content p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        .article-content ul, .article-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #334155;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        .article-content ul li {
+            list-style-type: disc;
+        }
+        .article-content ol li {
+            list-style-type: decimal;
+        }
+        .article-content a {
+            color: #059669;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .article-content a:hover {
+            color: #10b981;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #10b981;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #475569;
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .article-content strong {
+            color: #0f172a;
+        }
+        .step-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .step-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: #059669;
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-navy-50 text-navy-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- ヘッダー / ナビゲーション -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-navy-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-11 h-11 rounded-xl shadow-md object-contain border border-navy-100 bg-white p-0.5">
+                    <div>
+                        <a href="../index.html" class="text-lg font-bold text-navy-900 tracking-wider block leading-tight hover:text-brand-600 transition-colors">運営者倫理アライアンス</a>
+                        <span class="text-xs text-navy-600 block tracking-widest font-semibold uppercase">Operator Ethics Alliance</span>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-8 text-sm font-semibold text-navy-700">
+                    <a href="../index.html#about" class="hover:text-brand-600 transition-colors py-2">概要</a>
+                    <a href="../index.html#charter" class="hover:text-brand-600 transition-colors py-2">倫理憲章</a>
+                    <a href="../index.html" class="text-brand-600 border-b-2 border-brand-600 py-2">記事</a>
+                    <a href="../index.html#members" class="hover:text-brand-600 transition-colors py-2">参加団体</a>
+                    <a href="../index.html#join" class="hover:text-brand-600 transition-colors py-2">アライアンス参加</a>
+                </nav>
+                <div class="hidden md:flex">
+                    <a href="../index.html#join" class="bg-navy-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all duration-300">
+                        アライアンスに加入する
+                    </a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-navy-700 hover:text-brand-600 focus:outline-none" aria-label="メニューを開く">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-navy-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="../index.html#about" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">概要</a>
+            <a href="../index.html#charter" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">倫理憲章</a>
+            <a href="../index.html" class="block px-3 py-2.5 rounded-md text-brand-600 bg-brand-50 font-medium">記事</a>
+            <a href="../index.html#members" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">参加団体</a>
+            <a href="../index.html#join" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">アライアンス参加</a>
+            <div class="pt-2">
+                <a href="../index.html#join" class="block text-center bg-navy-900 hover:bg-brand-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all">
+                    アライアンスに加入する
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <!-- 記事ヘッダー -->
+        <section class="gradient-bg text-white py-16 lg:py-20 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-100 border border-brand-500/30">
+                            <i data-lucide="shield" class="w-3.5 h-3.5 mr-1.5"></i>プライバシー
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-navy-200 border border-white/20">
+                            初回記事
+                        </span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        トラッキングを防ぐには？<br class="hidden sm:inline">
+                        <span class="text-brand-500">手軽な方法</span>でプライバシーを守る
+                    </h1>
+                    <div class="flex items-center gap-4 text-sm text-navy-200">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            2026年5月27日
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            約5分で読めます
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 記事本文 -->
+        <section class="py-12 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 article-content">
+
+                <!-- 目次 -->
+                <div class="bg-navy-50 border border-navy-200 rounded-xl p-6 mb-8">
+                    <h3 class="text-sm font-bold text-navy-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="list" class="w-4 h-4 text-brand-600"></i>
+                        目次
+                    </h3>
+                    <ol class="space-y-1.5 text-sm">
+                        <li><a href="#intro" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">はじめに：あなたの行動は「見られている」</a></li>
+                        <li><a href="#what-is-tracking" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">トラッキングとは何か？ なぜ問題なのか？</a></li>
+                        <li><a href="#chrome-edge" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Chrome/Edgeでもできるプライバシー設定</a></li>
+                        <li><a href="#firefox" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">なぜFirefoxなのか？</a></li>
+                        <li><a href="#install-firefox" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Firefoxのダウンロードとインストール手順</a></li>
+                        <li><a href="#install-ubo" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">uBlock Originをインストールする</a></li>
+                        <li><a href="#settings" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">インストール後の簡単な設定</a></li>
+                        <li><a href="#check" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">きちんと動いているか確認しよう</a></li>
+                        <li><a href="#conclusion" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">まとめ：小さな一手が大きな安心に</a></li>
+                    </ol>
+                </div>
+
+                <!-- 1. はじめに -->
+                <h2 id="intro">はじめに：あなたの行動は「見られている」</h2>
+                <p>
+                    あなたが今見ているこのWebサイトも含め、インターネット上の多くのサイトには<strong>トラッキング（追跡）</strong>の仕組みが組み込まれています。
+                    検索したキーワード、訪れたページ、商品の閲覧履歴、さらにはマウスの動きやスクロールの仕方まで――これらは無数の企業によって記録・分析され、
+                    あなたに最適化された広告の表示や、ときに意図しない形での情報利用に使われています。
+                </p>
+                <p>
+                    「追跡されるのは気持ち悪い」「でも、技術に詳しくないから防ぎようがない」――そう思っていませんか？
+                    実は、たった <strong>2つのステップ</strong> で、一般的なトラッキングの大部分をブロックできる方法があります。
+                </p>
+                <p>
+                    この記事では、<strong>Firefox</strong>というブラウザと、<strong>uBlock Origin（uBO）</strong>という拡張機能を使った、
+                    最も手軽で効果的なトラッキング対策を、スクリーンショットなしでも迷わないよう丁寧に解説します。
+                </p>
+
+                <!-- 2. トラッキングとは -->
+                <h2 id="what-is-tracking">トラッキングとは何か？ なぜ問題なのか？</h2>
+                <p>
+                    トラッキングとは、あなたのオンライン上の行動を第三者企業が追跡・記録する仕組みです。代表的なものに以下のようなものがあります：
+                </p>
+                <ul>
+                    <li><strong>サードパーティ Cookie</strong>：訪れたサイトとは別のドメイン（広告配信会社など）が発行するCookie。あなたが複数のサイトをまたいで何を見ているかを追跡します。</li>
+                    <li><strong>フィンガープリンティング</strong>：ブラウザの設定やインストールフォント、画面サイズなどデバイス固有の情報を組み合わせて、Cookieを使わずにあなたを識別する手法。</li>
+                    <li><strong>ソーシャル追跡</strong>：SNSの「いいね！」ボタンやシェアボタンが各サイトに埋め込まれており、ページを開くたびにSNS企業にあなたの訪問が通知されます。</li>
+                    <li><strong>広告トラッキング</strong>：リターゲティング広告など、一度見た商品の広告が別のサイトでも表示されるのはこの仕組みによるものです。</li>
+                </ul>
+                <blockquote>
+                    <strong>プライバシーの観点から問題となる点：</strong><br>
+                    ・自分の知らないうちに行動プロファイルが作成される<br>
+                    ・収集されたデータが漏洩したり、意図しない目的に使われるリスク<br>
+                    ・「見られている」という心理的圧迫感<br>
+                    ・トラッキングに伴う無駄なデータ通信とページ読み込みの遅延
+                </blockquote>
+                <p>
+                    憲章第1条（利用者プライバシーの保護）の精神にもある通り、利用者は自身のデータをコントロールする権利を持っています。
+                    その第一歩として、まずは自分で自分のプライバシーを守る技術を身につけることが大切です。
+                </p>
+
+                <!-- 3. Chrome/Edgeでもできるプライバシー設定 -->
+                <h2 id="chrome-edge">Chrome / Edge でもできるプライバシー設定</h2>
+                <p>
+                    「Firefoxに乗り換えるのはハードルが高い」「仕事でChromeやEdgeを使わざるを得ない」という方も多いでしょう。
+                    そうした方のために、普段使いのブラウザでも実践できるプライバシー設定をいくつか紹介します。
+                    完全ではないものの、何も設定しないよりは格段に安心です。
+                </p>
+
+                <h3>Google Chrome での設定</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「サードパーティ Cookie」をブロックする</strong>
+                            <p class="mb-0 text-sm">
+                                アドレスバーの右端にある <strong>🔒（南京錠）アイコン</strong> → 「サイトの設定」→ 「Cookie」で
+                                「サードパーティの Cookie をブロックする」をオンにします。
+                                または、設定 → 「プライバシーとセキュリティ」→ 「Cookie と他のサイトデータ」→
+                                「サードパーティの Cookie をブロックする」を選択します。
+                            </p>
+                            <p class="text-xs text-navy-500 mt-1">※これにより、広告トラッカーが発行するCookieを遮断できます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「セーフブラウジング」を「強化された保護」にする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシーとセキュリティ」→ 「セーフブラウジング」で
+                                「強化された保護」を選択します。これにより、危険なサイトやダウンロードからより強力に保護されます。
+                                また、パスワード漏洩の警告も受けられます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「広告のプライバシー」機能を無効にする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシーとセキュリティ」→ 「広告のプライバシー」で、
+                                「広告のトピック」「サイト提案の広告」「広告の測定」の3つすべてをオフにします。
+                                これはChromeが独自に導入した「Topics API」と呼ばれる新しい追跡手法を停止するための設定です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「HTTPS-First モード」を有効にする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシーとセキュリティ」→ 「セキュリティ」で
+                                「常に安全な接続を使用する」をオンにします。
+                                これにより、暗号化されていないHTTP接続を自動的にHTTPSにアップグレードし、通信内容の傍受を防ぎます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Microsoft Edge での設定</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「トラッキング防止」を「厳密」にする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシー、検索、サービス」→ 「トラッキング防止」で
+                                「厳密」を選択します。Edgeは標準でトラッキング防止機能を備えており、
+                                「厳密」に設定することでほとんどのトラッカーをブロックできます。
+                                ただし、一部のサイトが正常に動作しなくなる可能性があるため、その場合は「バランス」に戻しても構いません。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「オプションの診断データ」をオフにする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシー、検索、サービス」で
+                                「オプションの診断データ」をオフにします。
+                                これにより、 Microsoft に送信される利用データが最小限に抑えられます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「おすすめ」や「個人設定」関連を無効にする</strong>
+                            <p class="mb-0 text-sm">
+                                同じく「プライバシー、検索、サービス」画面で、
+                                「検索とサービスに関する個人設定を表示する」「おすすめ」などの項目をすべてオフにします。
+                                これにより、ブラウジング履歴に基づく広告やコンテンツのパーソナライズを停止できます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">セキュリティ関連の保護を強化する</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「プライバシー、検索、サービス」→ 「セキュリティ」で
+                                「Microsoft Defender SmartScreen」と「望ましくない可能性のあるアプリをブロックする」の両方をオンにします。
+                                また、「セキュリティ」→「セキュリティで保護された接続を使用する」で「常に安全な接続を使用する」をオンにしてください。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <blockquote>
+                    <strong>Chrome/Edgeに共通する注意点：</strong><br>
+                    ChromeもEdgeも、ここで紹介した設定を行えば <strong>「何もしないよりはずっと安全」</strong> です。
+                    ただし、Firefox + uBlock Origin ほどのブロック能力はありません。
+                    なぜなら、ChromeとEdgeはどちらもGoogleとMicrosoftという広告ビジネスを主軸とする企業の製品であり、
+                    ブラウザ自体がトラッキングを完全に排除する設計にはなっていないからです。
+                    本気でプライバシーを守りたいなら、<a href="#install-firefox">Firefoxへの移行</a>を最終的にはおすすめします。
+                </blockquote>
+
+                <!-- 4. なぜFirefoxなのか -->
+                <h2 id="firefox">なぜFirefoxなのか？</h2>
+                <p>
+                    ブラウザにはChrome、Edge、Safariなど様々な選択肢がありますが、プライバシー保護の観点から<strong>Firefox</strong>を推奨する理由は明確です：
+                </p>
+                <ul>
+                    <li><strong>デフォルトのトラッキング防止機能</strong>：Firefoxは標準で「拡張トラッキング防止（ETP）」を搭載しており、多くのトラッカーを自動的にブロックします。</li>
+                    <li><strong>非営利団体による運営</strong>：Mozilla Foundationという非営利団体が開発しており、株主への利益還元ではなくユーザーの権利を優先する設計思想です。</li>
+                    <li><strong>拡張機能の自由度</strong>：Chromeが Manifest V3 への移行で広告ブロッカーの能力を制限しつつある一方、Firefoxは Manifest V3 でも強力なブロック機能を維持しています。特に<strong>uBlock Origin</strong>のフルパワーを活かせるのはFirefoxだけです。</li>
+                    <li><strong>オープンソース</strong>：ソースコードが公開されており、本当にプライバシーを尊重しているのか、誰でも検証できます。</li>
+                </ul>
+
+                <!-- 5. Firefoxのインストール -->
+                <h2 id="install-firefox">Firefoxのダウンロードとインストール手順</h2>
+                <p>まずは、普段お使いのブラウザ（ChromeやEdgeなど）で、以下の公式サイトにアクセスしてください。</p>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">ダウンロードページにアクセス</strong>
+                            <p class="mb-0 text-sm">以下のURLをクリック（またはコピーしてブラウザのアドレスバーに貼り付け）してください。</p>
+                            <p class="mt-2">
+                                <a href="https://www.firefox.com/ja/download/all/" target="_blank" rel="noopener noreferrer" class="text-brand-600 font-bold text-sm underline break-all">
+                                    https://www.firefox.com/ja/download/all/
+                                </a>
+                            </p>
+                            <p class="text-xs text-navy-500 mt-1">※「すべての言語とビルド」ページが開きます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「日本語 64bit版」をダウンロード</strong>
+                            <p class="mb-0 text-sm">
+                                ページ内に「日本語」の行があります。その行の「Windows 64-bit」または「macOS 64-bit」など、お使いのOSに合ったリンクをクリックしてください。
+                                自動的にダウンロードが始まります。
+                            </p>
+                            <p class="text-xs text-navy-500 mt-1">※Windowsの場合は「Windows 64-bit」、Macの場合は「macOS 64-bit」を選びます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">インストーラを実行</strong>
+                            <p class="mb-0 text-sm">
+                                ダウンロードしたファイル（Windowsの場合「Firefox Installer.exe」）をダブルクリックして実行します。
+                                表示される案内に従って進むだけで、難しい設定は一切必要ありません。デフォルト設定のまま「インストール」をクリックすれば完了です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Firefoxを起動</strong>
+                            <p class="mb-0 text-sm">
+                                インストールが完了したら、自動的にFirefoxが起動します。初回起動時には、いくつかの初期設定（テーマの選択やデータインポートなど）を尋ねられますが、
+                                「標準設定で開始」などを選んでそのまま進めて問題ありません。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. uBlock Originのインストール -->
+                <h2 id="install-ubo">uBlock Originをインストールする</h2>
+                <p>
+                    Firefoxが起動したら、次に<strong>uBlock Origin</strong>（通称「uBO」）という拡張機能をインストールします。
+                    uBlock Originは、広告ブロックに留まらず、トラッカーやマルウェアドメインをブロックする非常に強力なツールです。
+                    しかも軽量で、ブラウザの動作が重くなることはほとんどありません。
+                </p>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Firefoxアドオンページにアクセス</strong>
+                            <p class="mb-0 text-sm">
+                                Firefoxのアドレスバーに以下のURLを入力するか、リンクをクリックしてください。
+                            </p>
+                            <p class="mt-2">
+                                <a href="https://addons.mozilla.org/ja/firefox/addon/ublock-origin/" target="_blank" rel="noopener noreferrer" class="text-brand-600 font-bold text-sm underline break-all">
+                                    https://addons.mozilla.org/ja/firefox/addon/ublock-origin/
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">「Firefoxに追加」をクリック</strong>
+                            <p class="mb-0 text-sm">
+                                ページの中央に大きな青い「Firefoxに追加」ボタンがあります。それをクリックしてください。
+                                確認のポップアップが表示されるので、「追加」ボタンをクリックします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">インストール完了を確認</strong>
+                            <p class="mb-0 text-sm">
+                                インストールが完了すると、Firefoxの右上（アドレスバーの右側）に <strong>盾のようなアイコン</strong> が表示されます。
+                                これがuBlock Originのアイコンです。このアイコンが表示されていれば、インストールは成功です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. 設定 -->
+                <h2 id="settings">インストール後の簡単な設定</h2>
+                <p>
+                    uBlock Originはデフォルトのままでも非常に強力ですが、さらに効果を高めたい場合は以下の追加設定をおすすめします。
+                </p>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">ダッシュボードを開く</strong>
+                            <p class="mb-0 text-sm">
+                                盾アイコンを右クリック（Macの場合はCtrl+クリック）し、「オプション」または「設定」を選択します。
+                                または、盾アイコンを左クリックして表示されるメニューから歯車アイコンをクリックしても同じ画面が開きます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">フィルターリストを追加</strong>
+                            <p class="mb-0 text-sm">
+                                ダッシュボードの「フィルターリスト」タブをクリックします。デフォルトでいくつかのリストにチェックが入っていますが、
+                                以下のリストにもチェックを入れるとより強固な防御が可能です：
+                            </p>
+                            <ul class="text-sm mt-2 space-y-1">
+                                <li><strong>「プライバシー」</strong> セクション内： EasyPrivacy / AdGuard プライバシー</li>
+                                <li><strong>「迷惑」</strong> セクション内： AdGuard 迷惑</li>
+                                <li>（必要な場合）<strong>「地域」</strong> セクション内： 日本語用フィルター（Japanese Filter / Fanboy's Japanese）</li>
+                            </ul>
+                            <p class="text-xs text-navy-500 mt-2">※チェックを入れたら、左上の「更新」ボタンをクリックしてフィルターを最新の状態にしてください。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">迷惑なポップアップもブロック</strong>
+                            <p class="mb-0 text-sm">
+                                ダッシュボードの「設定」タブで、「ポップアップをブロックする」や「大規模なメディア要素をブロックする」といった項目が有効になっていることを確認してください。
+                                デフォルトで有効になっているはずですが、念のため確認しましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. 確認 -->
+                <h2 id="check">きちんと動いているか確認しよう</h2>
+                <p>
+                    設定が完了したら、実際に効果を確認してみましょう。以下の手順でトラッキングがブロックされていることを実感できます。
+                </p>
+                <ul>
+                    <li><strong>盾アイコンを見る</strong>：普段使っているサイトをいくつか開き、uBlock Originの盾アイコンに表示される数字を確認しましょう。
+                    この数字はブロックしたリクエスト（広告・トラッカー）の数を表しています。ニュースサイトなどでは、1ページで数十〜数百ものリクエストがブロックされていることがわかります。</li>
+                    <li><strong>ページの表示速度</strong>：トラッカーがブロックされることで、ページの読み込みが明らかに速くなったと感じるはずです。</li>
+                    <li><strong>広告が消えた</strong>：多くのサイトで広告が表示されなくなっていることに気づくでしょう。もし特定のサイトだけ正常に表示されない場合は、盾アイコンをクリックして一時的に無効化することもできます（ホワイトリスト機能）。</li>
+                </ul>
+                <blockquote>
+                    <strong>注意点：</strong>uBlock Originは広告をブロックしますが、これは「広告そのものが悪」というわけではありません。
+                    問題なのは、<strong>ユーザーの同意なく過度に追跡を行う</strong>広告の仕組みです。
+                    信頼できるサイト（例えば、このOEAのサイト）に対しては、盾アイコンから「このサイトでは無効にする」を選んでホワイトリストに追加することも検討してください。
+                </blockquote>
+
+                <!-- 9. まとめ -->
+                <h2 id="conclusion">まとめ：小さな一手が大きな安心に</h2>
+                <p>
+                    この記事では、以下の3つのレベルでトラッキング対策を解説しました：
+                </p>
+                <ol>
+                    <li><strong>今すぐChrome/Edgeでできる設定</strong> — Cookie ブロック、トラッキング防止、 Topics API の無効化</li>
+                    <li><strong>Firefoxをインストールする</strong>（<a href="https://www.firefox.com/ja/download/all/" target="_blank" rel="noopener noreferrer">ダウンロードページ</a>） — デフォルトのトラッキング防止機能を活用</li>
+                    <li><strong>uBlock Originをインストールする</strong>（<a href="https://addons.mozilla.org/ja/firefox/addon/ublock-origin/" target="_blank" rel="noopener noreferrer">Firefoxアドオンページ</a>） — 最強のトラッキング・広告ブロック</li>
+                </ol>
+                <p>
+                    たったこれだけで、インターネット上の大部分のトラッキングから自分のデータを守ることができます。
+                    これは特別なスキルを必要としない、誰にでもできる<strong>「プライバシーの入口」</strong>です。
+                </p>
+                <p>
+                    運営者倫理アライアンスでは、今回のような「利用者自身ができるプライバシー対策」に関する記事を定期的に発信していく予定です。
+                    次回は、より高度なプライバシー保護手法や、各OSにおけるプライバシー設定の総点検方法などをお届けします。
+                </p>
+                <p class="text-sm text-navy-500 border-t border-navy-200 pt-4 mt-8">
+                    文責：運営者倫理アライアンス（OEA） 編集部<br>
+                    初回制定・公開：2026年5月27日
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-navy-900 text-white border-t border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-9 h-9 rounded-lg object-contain bg-white p-0.5">
+                        <span class="text-base font-bold text-white tracking-wider">運営者倫理アライアンス</span>
+                    </div>
+                    <p class="text-xs text-navy-300 leading-relaxed max-w-sm">
+                        OEAは、多様化するインターネットサービスにおいて、開発者や事業者が利用者の尊厳、プライバシー、持続可能性に責任を持つ世界を目指します。
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">ナビゲーション</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><a href="../index.html#about" class="hover:text-white transition-colors">概要</a></li>
+                        <li><a href="../index.html#charter" class="hover:text-white transition-colors">倫理憲章</a></li>
+                        <li><a href="../index.html" class="hover:text-white transition-colors">記事一覧</a></li>
+                        <li><a href="../index.html#members" class="hover:text-white transition-colors">参加企業・団体</a></li>
+                        <li><a href="../index.html#join" class="hover:text-white transition-colors">アライアンス加入</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">お問い合わせ・リンク</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><span class="block">運営者倫理アライアンス 事務局</span></li>
+                        <li><span class="block">初回制定：2026年5月27日</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-navy-800 text-center text-xs text-navy-400">
+                &copy; 2026 Operator Ethics Alliance (OEA). All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
