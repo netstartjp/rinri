@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【第3回】ChatGPT・Gemini・Copilot — AIチャットのプライバシーリスク完全解説 | 運営者倫理アライアンス</title>
+    <meta name="description" content="ChatGPT、Gemini、Microsoft Copilotなどの生成AIチャットサービスが収集するデータの実態と、機密情報を守るための具体的な対策、プライバシー重視のAIサービスを徹底解説。">
+    <!-- Canonical -->
+    <link rel="canonical" href="https://rinri.zssu.me/articles/003-ai-chat-privacy.html">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            800: '#065f46',
+                        },
+                        navy: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            50: '#f8fafc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 90%);
+        }
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #10b981;
+        }
+        .article-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .article-content p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        .article-content ul, .article-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #334155;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        .article-content ul li {
+            list-style-type: disc;
+        }
+        .article-content ol li {
+            list-style-type: decimal;
+        }
+        .article-content a {
+            color: #059669;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .article-content a:hover {
+            color: #10b981;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #10b981;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #475569;
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .article-content strong {
+            color: #0f172a;
+        }
+        .article-content .risk-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .article-content .risk-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .article-content .safe-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .article-content .safe-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .step-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .step-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: #059669;
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        .risk-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background: #fef2f2;
+            color: #dc2626;
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
+        .safe-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background: #f0fdf4;
+            color: #16a34a;
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
+        .warning-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-navy-50 text-navy-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- ヘッダー / ナビゲーション -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-navy-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-11 h-11 rounded-xl shadow-md object-contain border border-navy-100 bg-white p-0.5">
+                    <div>
+                        <a href="../index.html" class="text-lg font-bold text-navy-900 tracking-wider block leading-tight hover:text-brand-600 transition-colors">運営者倫理アライアンス</a>
+                        <span class="text-xs text-navy-600 block tracking-widest font-semibold uppercase">Operator Ethics Alliance</span>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-8 text-sm font-semibold text-navy-700">
+                    <a href="../index.html#about" class="hover:text-brand-600 transition-colors py-2">概要</a>
+                    <a href="../index.html#charter" class="hover:text-brand-600 transition-colors py-2">倫理憲章</a>
+                    <a href="../index.html" class="text-brand-600 border-b-2 border-brand-600 py-2">記事</a>
+                    <a href="../index.html#members" class="hover:text-brand-600 transition-colors py-2">参加団体</a>
+                    <a href="../index.html#join" class="hover:text-brand-600 transition-colors py-2">アライアンス参加</a>
+                </nav>
+                <div class="hidden md:flex">
+                    <a href="../index.html#join" class="bg-navy-900 hover:bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all duration-300">
+                        アライアンスに加入する
+                    </a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-navy-700 hover:text-brand-600 focus:outline-none" aria-label="メニューを開く">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-navy-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="../index.html#about" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">概要</a>
+            <a href="../index.html#charter" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">倫理憲章</a>
+            <a href="../index.html" class="block px-3 py-2.5 rounded-md text-brand-600 bg-brand-50 font-medium">記事</a>
+            <a href="../index.html#members" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">参加団体</a>
+            <a href="../index.html#join" class="block px-3 py-2.5 rounded-md text-navy-700 hover:bg-navy-50 hover:text-brand-600 font-medium">アライアンス参加</a>
+            <div class="pt-2">
+                <a href="../index.html#join" class="block text-center bg-navy-900 hover:bg-brand-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all">
+                    アライアンスに加入する
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <!-- 記事ヘッダー -->
+        <section class="gradient-bg text-white py-16 lg:py-20 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-100 border border-brand-500/30">
+                            <i data-lucide="bot" class="w-3.5 h-3.5 mr-1.5"></i>AIプライバシー
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-navy-200 border border-white/20">
+                            第3回
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-100 border border-yellow-500/30">
+                            <i data-lucide="alert-triangle" class="w-3 h-3 mr-1"></i>要注意
+                        </span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        ChatGPT・Gemini・Copilot<br class="hidden sm:inline">
+                        <span class="text-brand-500">AIチャットのプライバシーリスク</span>を総解説
+                    </h1>
+                    <p class="text-lg sm:text-xl text-navy-200 max-w-2xl leading-relaxed">
+                        便利な生成AIの裏側で、あなたの会話データはどう扱われているのか？ 全主要サービスのデータ利用実態と、今すぐできる安全な使い方を解説します。
+                    </p>
+                    <div class="flex items-center gap-4 text-sm text-navy-200">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            2026年5月27日
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            約9分で読めます
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 記事本文 -->
+        <section class="py-12 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 article-content">
+
+                <!-- 目次 -->
+                <div class="bg-navy-50 border border-navy-200 rounded-xl p-6 mb-8">
+                    <h3 class="text-sm font-bold text-navy-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="list" class="w-4 h-4 text-brand-600"></i>
+                        目次
+                    </h3>
+                    <ol class="space-y-1.5 text-sm">
+                        <li><a href="#intro" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">はじめに：AIチャットの「無料」の本当の代償</a></li>
+                        <li><a href="#data-collected" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">AIチャットはあなたの何を収集しているのか？</a></li>
+                        <li><a href="#chatgpt" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">ChatGPT（OpenAI）のデータ利用実態と対策</a></li>
+                        <li><a href="#gemini" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Google Geminiのデータ利用実態と対策</a></li>
+                        <li><a href="#copilot" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">Microsoft Copilotのデータ利用実態と対策</a></li>
+                        <li><a href="#comparison" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">主要AIチャットのプライバシー比較</a></li>
+                        <li><a href="#never-input" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">絶対に入力してはいけない情報</a></li>
+                        <li><a href="#alternatives" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">プライバシー重視のAI代替サービス</a></li>
+                        <li><a href="#practical-tips" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">今すぐ実践できる安全な使い方7か条</a></li>
+                        <li><a href="#conclusion" class="text-brand-600 hover:text-brand-500 no-underline hover:underline">まとめ：賢く使うために知っておくべきこと</a></li>
+                    </ol>
+                </div>
+
+                <!-- 1. はじめに -->
+                <h2 id="intro">はじめに：AIチャットの「無料」の本当の代償</h2>
+                <p>
+                    ChatGPTの登場以来、生成AIは私たちの生活に急速に浸透しました。わからないことを質問すれば即座に回答が返ってくる。
+                    文章の下書き、コードの生成、アイデアの整理――まさに魔法のようなツールです。
+                </p>
+                <p>
+                    しかし、その便利さの裏側で、<strong>あなたがAIに入力したすべての会話データ</strong>がどう扱われているか、考えたことはありますか？
+                    AIチャットサービスは基本的に「無料」または「低額のサブスクリプション」で提供されていますが、その代償として
+                    <strong>あなたの会話データがモデルの学習や品質改善に利用されている</strong>ケースがほとんどです。
+                </p>
+                <p>
+                    この記事では、主要なAIチャットサービス（ChatGPT、Google Gemini、Microsoft Copilot）が
+                    どのようにデータを収集・利用しているかの実態を明らかにし、<strong>安全にAIを活用するための具体的な方法</strong>を徹底解説します。
+                </p>
+
+                <blockquote>
+                    <strong>この記事を読む前に理解しておくべき最重要ポイント：</strong><br>
+                    AIチャットサービスの<strong>「無料版」はあなたが製品である</strong>という現実があります。
+                    つまり、あなたの会話データはAIモデルの改善という名目で収集・分析され、時には人間のレビュアーによって読まれている可能性すらあります。
+                    機密情報や個人情報を何も考えずに入力するのは、見知らぬ人に日記を公開するのと同じくらい危険です。
+                </blockquote>
+
+                <!-- 2. 収集されるデータ -->
+                <h2 id="data-collected">AIチャットはあなたの何を収集しているのか？</h2>
+                <p>
+                    まずは、AIチャットサービス全般が収集するデータの種類を理解しましょう。
+                    以下のデータは、主要なAIサービスのプライバシーポリシーに共通して記載されているものです。
+                </p>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="message-square" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">1. 会話の内容（プロンプトと応答）</h3>
+                            <p class="text-sm mb-0">
+                                あなたが入力したすべてのプロンプト（質問・指示）と、AIが生成した応答が記録されます。
+                                これには、個人の悩み、仕事の機密情報、コード、アイデア、健康情報など、あらゆる内容が含まれます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="thumbs-up" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">2. フィードバック（高評価・低評価）</h3>
+                            <p class="text-sm mb-0">
+                                あなたが「いいね」や「よくないね」を押した情報、さらには回答をコピーしたかどうか、再生成を求めたかどうかといった
+                                インタラクションも記録され、モデルの品質評価に使われます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="globe" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">3. 利用状況メタデータ</h3>
+                            <p class="text-sm mb-0">
+                                アクセス日時、IPアドレス、ブラウザ情報、デバイス情報、おおよその地理位置情報など。
+                                これらはサービスのセキュリティ維持や利用傾向の分析に使われます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="upload" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">4. アップロードされたファイル</h3>
+                            <p class="text-sm mb-0">
+                                ChatGPTへの画像やPDFのアップロード、Geminiへのファイル添付――これらのファイル内容も全て解析・記録されます。
+                                画像に写り込んだ個人情報（顔写真、住所、クレジットカードなど）も例外ではありません。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="mic" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">5. 音声入力データ</h3>
+                            <p class="text-sm mb-0">
+                                音声でAIと会話した場合、その音声データも収集・分析されます。声のトーンや話し方からも
+                                追加の情報が抽出される可能性があります。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ChatGPT -->
+                <h2 id="chatgpt">ChatGPT（OpenAI）のデータ利用実態と対策</h2>
+                <p>
+                    AIチャットブームの火付け役であるChatGPT。そのデータ利用ポリシーは、2023年から2026年にかけて何度も更新されており、
+                    当初よりは改善されたものの、注意すべき点は多く残っています。
+                </p>
+
+                <h3>OpenAIのデータ利用の実態</h3>
+                <ul>
+                    <li><strong>会話データの学習利用</strong>：ChatGPTの無料版およびPlus版では、デフォルトで会話データがAIモデルの学習に利用されます（改善のための学習）。つまり、あなたの会話が将来のAIモデルの訓練データとして使われる可能性があります。</li>
+                    <li><strong>人間によるレビュー</strong>：OpenAIは、モデルの品質向上と安全性確保のために、ランダムに抽出された会話を人間のレビュアーが確認するシステムを採用しています。完全に自動化されているわけではありません。</li>
+                    <li><strong>データ保持期間</strong>：会話データは通常30日間保持された後、削除されるか匿名化されます。ただし、法的義務が生じた場合はこの限りではありません。</li>
+                    <li><strong>API利用時の扱い</strong>：ChatGPT API（開発者がアプリに組み込む形）で利用したデータは、原則としてモデルの学習には使われません。これはWeb版とAPI版でポリシーが異なる点です。</li>
+                </ul>
+
+                <h3>ChatGPTでできるプライバシー対策</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">会話履歴をオフにする（最重要）</strong>
+                            <p class="mb-0 text-sm">
+                                ChatGPTの設定メニュー → 「データコントロール」 → 「会話履歴をオフにする」（Chat History & Training）を有効にします。
+                                これにより、新しい会話がモデルの学習に使われなくなります。ただし、過去の会話は影響を受けないため、過去データも削除しましょう。
+                            </p>
+                            <p class="text-xs text-navy-500 mt-1">※この設定はChatGPT Web版でのみ利用可能です。モバイルアプリでも同様の設定があります。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">過去の会話をすべて削除する</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「データコントロール」 → 「すべての会話を削除」で過去の履歴をクリアします。
+                                定期的に削除する習慣をつけることをおすすめします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">一時的なチャット（Temporary Chat）を利用する</strong>
+                            <p class="mb-0 text-sm">
+                                ChatGPTには「一時的なチャット（Temporary Chat）」機能があります。このモードで行った会話は、
+                                履歴に残らず、モデルの学習にも使われません。機密性の高い内容を扱う場合は、必ずこのモードを利用しましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Team / Enterprise プランを検討する</strong>
+                            <p class="mb-0 text-sm">
+                                ビジネスでChatGPTを利用する場合、TeamまたはEnterpriseプランでは会話データがモデルの学習に使われないことが
+                                契約上保証されています。プライバシーが重要な業務での利用は有料プランへのアップグレードを検討しましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>ChatGPTデータエクスポート（自分データの確認）</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">自分のデータをエクスポートする</strong>
+                            <p class="mb-0 text-sm">
+                                設定 → 「データコントロール」 → 「データのエクスポート」を選択すると、OpenAIが保持しているあなたのデータを
+                                ZIPファイルでダウンロードできます。これにより、どの程度のデータが保存されているかを実際に確認できます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Gemini -->
+                <h2 id="gemini">Google Geminiのデータ利用実態と対策</h2>
+                <p>
+                    Googleが提供するGemini（旧Bard）は、Googleアカウントと統合されていることが最大の特徴であり、
+                    同時に最大のプライバシーリスクでもあります。
+                </p>
+
+                <h3>Google Geminiのデータ利用の実態</h3>
+                <ul>
+                    <li><strong>会話データの学習利用</strong>：Geminiの会話データは、Googleのプライバシーポリシーに基づき、AIモデルの改善に利用されます。無料版ではこの利用を完全にオフにすることはできません。</li>
+                    <li><strong>Googleアカウントとの紐づけ</strong>：Geminiでの会話はGoogleアカウントに紐づいて保存されます。つまり、Googleが保有するあなたの検索履歴、YouTube視聴履歴、位置情報などと組み合わせてプロファイリングされる可能性があります。</li>
+                    <li><strong>人間によるレビュー</strong>：GoogleもOpenAIと同様に、品質改善のためにランダムな会話を人間のレビュアーが確認するシステムを採用しています。</li>
+                    <li><strong>データ保持</strong>：Geminiの会話データはデフォルトで最大18ヶ月間保存されます（設定により変更可能）。</li>
+                </ul>
+
+                <h3>Geminiでできるプライバシー対策</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Gemini Apps アクティビティをオフにする</strong>
+                            <p class="mb-0 text-sm">
+                                <a href="https://myactivity.google.com/" target="_blank" rel="noopener noreferrer">Google アクティビティ管理</a> にアクセスし、
+                                「Gemini Apps アクティビティ」のトグルをオフにします。これにより、今後Geminiでの会話履歴が保存されなくなります。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">過去のGeminiアクティビティを削除する</strong>
+                            <p class="mb-0 text-sm">
+                                同じアクティビティ管理画面で、過去のGemini Appsのアクティビティをすべて削除します。
+                                また、「自動削除」機能を設定して、新しいアクティビティを3ヶ月または18ヶ月で自動削除するようにしておきましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Gemini Appsへのアクセス権限を見直す</strong>
+                            <p class="mb-0 text-sm">
+                                Googleアカウントの設定 → 「データとプライバシー」 → 「サードパーティのアプリとサービス」で、
+                                Gemini Appsに与えたアクセス権限を定期的に見直しましょう。必要以上に多くの権限を与えていないか確認します。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Google WorkspaceでのGemini利用に注意</strong>
+                            <p class="mb-0 text-sm">
+                                Google Workspace（旧G Suite）のアカウントでGeminiを利用する場合、組織の管理者がデータ利用ポリシーを
+                                設定している可能性があります。職場のアカウントでGeminiに機密情報を入力する前に、必ず組織のポリシーを確認しましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Copilot -->
+                <h2 id="copilot">Microsoft Copilotのデータ利用実態と対策</h2>
+                <p>
+                    Microsoft Copilot（旧Bing Chat）は、OpenAIの技術をベースにしながらも、Microsoft独自のポリシーで運用されています。
+                    Windowsに深く統合されているため、気づかないうちに利用しているケースも多いのが特徴です。
+                </p>
+
+                <h3>Microsoft Copilotのデータ利用の実態</h3>
+                <ul>
+                    <li><strong>会話データの学習利用</strong>：Copilotの会話データもMicrosoftの製品改善に利用されます。無料版ではオプトアウト（拒否）が制限されています。</li>
+                    <li><strong>Microsoftアカウントとの紐づけ</strong>：Copilotでの会話はMicrosoftアカウントに関連付けられ、Bingの検索履歴やEdgeのブラウジングデータと統合されます。</li>
+                    <li><strong>商用データ保護（Enterprise）</strong>：Microsoft 365 Copilot（ビジネス向け）では、会話データがモデルの学習に使われず、組織外に共有されないことが契約上保証されています。</li>
+                    <li><strong>Bingとの統合</strong>：Copilotの会話はBingの検索データとしても扱われるため、検索履歴の管理設定がCopilotにも影響します。</li>
+                </ul>
+
+                <h3>Copilotでできるプライバシー対策</h3>
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Bingの検索履歴を管理する</strong>
+                            <p class="mb-0 text-sm">
+                                Microsoft プライバシーダッシュボード（<a href="https://account.microsoft.com/privacy/" target="_blank" rel="noopener noreferrer">account.microsoft.com/privacy/</a>）にアクセスし、
+                                「検索履歴」をクリアします。また、「新しい検索データが保存されないようにする」設定を有効にします。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Copilotの設定で「詳細な応答」をオフにする</strong>
+                            <p class="mb-0 text-sm">
+                                Copilotの設定画面で「詳細な応答」や「コンテキスト（会話の文脈）を記憶する」といった機能をオフにすると、
+                                収集されるデータの範囲を限定できます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Edgeのトラッキング防止を「厳密」にする</strong>
+                            <p class="mb-0 text-sm">
+                                前回（<a href="001-tracking-prevention.html">トラッキングを防ぐには？</a>）および前々回（<a href="002-search-engine-privacy.html">検索エンジンのプライバシー</a>）の記事でも紹介した通り、
+                                Edgeの「トラッキング防止」を「厳密」にすることで、CopilotとBingの間でのデータ共有をある程度制限できます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">Windows Copilot（サイドバー）を無効にする</strong>
+                            <p class="mb-0 text-sm">
+                                Windows 11ではタスクバーにCopilotボタンが統合されています。使用しないのであれば、
+                                設定 → 「個人用設定」 → 「タスクバー」 → 「Copilot」をオフにして無効にしておきましょう。
+                                これにより、誤って呼び出してしまうリスクを減らせます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 比較 -->
+                <h2 id="comparison">主要AIチャットのプライバシー比較</h2>
+                <p>
+                    ここで、主要なAIチャットサービスをプライバシーの観点から比較します。
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse bg-white rounded-xl overflow-hidden shadow-sm border border-navy-200">
+                        <thead>
+                            <tr class="bg-navy-900 text-white">
+                                <th class="p-3 text-left font-bold">サービス</th>
+                                <th class="p-3 text-left font-bold">会話の学習利用</th>
+                                <th class="p-3 text-left font-bold">学習利用の停止可否</th>
+                                <th class="p-3 text-left font-bold">履歴の保持期間</th>
+                                <th class="p-3 text-left font-bold">人間レビュー</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-navy-100">
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">ChatGPT（無料/Plus）</td>
+                                <td class="p-3 text-red-600 font-semibold">利用する</td>
+                                <td class="p-3 text-green-600 font-semibold">可（設定でオフ）</td>
+                                <td class="p-3 text-yellow-600 font-semibold">最長30日</td>
+                                <td class="p-3 text-yellow-600 font-semibold">あり（一部）</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">ChatGPT Team/Enterprise</td>
+                                <td class="p-3 text-green-600 font-semibold">利用しない</td>
+                                <td class="p-3 text-green-600 font-semibold">不要（契約保証）</td>
+                                <td class="p-3 text-green-600 font-semibold">ポリシーによる</td>
+                                <td class="p-3 text-green-600 font-semibold">なし</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">Google Gemini</td>
+                                <td class="p-3 text-red-600 font-semibold">利用する</td>
+                                <td class="p-3 text-yellow-600 font-semibold">一部制限あり</td>
+                                <td class="p-3 text-yellow-600 font-semibold">最長18ヶ月</td>
+                                <td class="p-3 text-yellow-600 font-semibold">あり（一部）</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">Microsoft Copilot</td>
+                                <td class="p-3 text-red-600 font-semibold">利用する</td>
+                                <td class="p-3 text-yellow-600 font-semibold">一部制限あり</td>
+                                <td class="p-3 text-yellow-600 font-semibold">最長18ヶ月</td>
+                                <td class="p-3 text-yellow-600 font-semibold">あり</td>
+                            </tr>
+                            <tr class="hover:bg-navy-50">
+                                <td class="p-3 font-bold">Microsoft 365 Copilot（企業）</td>
+                                <td class="p-3 text-green-600 font-semibold">利用しない</td>
+                                <td class="p-3 text-green-600 font-semibold">不要（契約保証）</td>
+                                <td class="p-3 text-green-600 font-semibold">ポリシーによる</td>
+                                <td class="p-3 text-green-600 font-semibold">なし</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-navy-500 mt-2">
+                    ※「学習利用の停止可否」は、一般ユーザーが自身の設定で変更できるかどうかを示しています。
+                    企業向けプランでは、契約上データが学習に利用されないことが保証されていますが、一般ユーザー向けでは設定変更が必要か、
+                    完全に停止できないサービスもあります。
+                </p>
+
+                <!-- 7. 絶対に入力してはいけない情報 -->
+                <h2 id="never-input">絶対に入力してはいけない情報</h2>
+                <p>
+                    これはどんなAIチャットサービス（無料版・有料版問わず）においても共通して言えることです。
+                    以下の情報をAIに入力するのは<strong>絶対に避けてください</strong>。
+                </p>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ クレジットカード情報・金融情報</h3>
+                            <p class="text-sm mb-0">
+                                カード番号、有効期限、セキュリティコード、銀行口座情報、暗号資産の秘密鍵などは絶対に入力しないでください。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="id-card" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ 個人識別情報</h3>
+                            <p class="text-sm mb-0">
+                                本名、住所、電話番号、メールアドレス、マイナンバー、パスポート番号、運転免許証番号など。
+                                仮名やニックネームを使う習慣をつけましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ ログイン認証情報</h3>
+                            <p class="text-sm mb-0">
+                                パスワード、PINコード、二要素認証のバックアップコード、APIキー、アクセストークンなど。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="building" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ 業務上の機密情報</h3>
+                            <p class="text-sm mb-0">
+                                社内の未公開情報、顧客データ、ソースコード（会社のポリシーに抵触する場合）、
+                                特許関連情報、営業秘密など。会社のポリシーを必ず確認してください。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ 医療・健康情報の詳細</h3>
+                            <p class="text-sm mb-0">
+                                診断結果、処方箋、検査数値など具体的な医療情報。一般的な健康相談（「頭痛の原因は？」など）は問題ありませんが、
+                                個人を特定できるレベルの詳細情報は避けましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-box">
+                    <div class="flex items-start gap-3">
+                        <div class="risk-icon">
+                            <i data-lucide="users" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">❌ 第三者の個人情報</h3>
+                            <p class="text-sm mb-0">
+                                家族や友人の個人情報、同僚の情報なども含まれます。「自分の情報じゃなければ大丈夫」ではありません。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <blockquote>
+                    <strong>黄金のルール：</strong> AIチャットへの入力は、<strong>「もし漏洩しても困らない情報だけ」</strong>に限定しましょう。
+                    「AIだから安全」という幻想は捨ててください。過去にはOpenAIのバグで他人の会話履歴が見えてしまうインシデントも実際に発生しています。
+                </blockquote>
+
+                <!-- 8. 代替サービス -->
+                <h2 id="alternatives">プライバシー重視のAI代替サービス</h2>
+                <p>
+                    どうしても機密情報を扱う必要がある場合や、AIにデータを学習されるのが許せない場合、
+                    以下のようなプライバシー重視の選択肢があります。
+                </p>
+
+                <div class="safe-box">
+                    <div class="flex items-start gap-3">
+                        <div class="safe-icon">
+                            <i data-lucide="monitor" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">ローカルLLM（完全オフラインAI）</h3>
+                            <p class="text-sm mb-0">
+                                <strong>完全にオフラインで動作するAIモデル</strong>を自分のPC上で動かす方法です。
+                                インターネットに一切接続しないため、データが外部に漏れるリスクはゼロです。
+                            </p>
+                            <ul class="text-sm mt-2 space-y-1">
+                                <li><strong>Llama.cpp / Ollama</strong>：MetaのLlamaモデルなどをローカルで動作させるフレームワーク。技術者向けだが、導入手順は年々簡略化されている。</li>
+                                <li><strong>GPT4All</strong>：Nomic AIが提供するローカルLLMランチャー。日本語対応は限定的だが、英語であればそこそこ使える。</li>
+                                <li><strong>LM Studio</strong>：GUIベースでLLMをダウンロード・実行できる。最も簡単に始められる選択肢のひとつ。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safe-box">
+                    <div class="flex items-start gap-3">
+                        <div class="safe-icon">
+                            <i data-lucide="cloud-off" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">プライバシー重視のクラウドAI</h3>
+                            <p class="text-sm mb-0">
+                                ローカル実行が難しい場合、以下のサービスはデータ利用に関する透明性が比較的高いとされています。
+                            </p>
+                            <ul class="text-sm mt-2 space-y-1">
+                                <li><strong>Perplexity AI Pro</strong>：検索連動型AI。Proプランでは、会話データが学習に利用されないことを明示。ただし価格はやや高め。</li>
+                                <li><strong>Anthropic Claude API</strong>：API経由で利用する場合、会話データはモデルの学習に使われない。Anthropicは「憲法的AI（Constitutional AI）」の理念を掲げ、安全性を重視。</li>
+                                <li><strong>Mistral AI</strong>：フランス発のオープンなAI企業。APIで利用するデータは学習に使われないと明言。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safe-box">
+                    <div class="flex items-start gap-3">
+                        <div class="safe-icon">
+                            <i data-lucide="feather" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-navy-900">オフライン特化のライティングツール</h3>
+                            <p class="text-sm mb-0">
+                                ライティングやアイデア出しであれば、クラウドAIに頼らなくても十分なツールがあります。
+                            </p>
+                            <ul class="text-sm mt-2 space-y-1">
+                                <li><strong>Obsidian</strong>：ローカル動作のナレッジベース。プラグインでAI補完も可能（ローカルモデルを利用）。</li>
+                                <li><strong>Logseq</strong>：オープンソースのアウトライナー。データはすべてローカル保存。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. 安全な使い方7か条 -->
+                <h2 id="practical-tips">今すぐ実践できる安全な使い方7か条</h2>
+                <p>
+                    最後に、この記事で紹介した知識を実践に移すための<strong>7つのアクション</strong>をまとめます。
+                    すべてを一度にやる必要はありません。できるものから少しずつ始めてみてください。
+                </p>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">会話履歴の保存をオフにする</strong>
+                            <p class="mb-0 text-sm">
+                                使用中のAIサービスの設定で、会話履歴の保存と学習利用をオフにしましょう。
+                                ChatGPTなら「会話履歴をオフ」、Geminiなら「Gemini Appsアクティビティ」をオフ。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">過去の会話データを定期的に削除する</strong>
+                            <p class="mb-0 text-sm">
+                                一度設定をオフにしても、過去のデータは残ったままです。定期的に削除する習慣をつけましょう。
+                                カレンダーに「毎月1日はAI履歴を削除する日」と入れるのも手です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">個人情報は具体的に入力しない</strong>
+                            <p class="mb-0 text-sm">
+                                名前は仮名やイニシャル、住所は「東京都内の駅前」など抽象化する。
+                                「このコードをレビューして」と聞くときも、APIキーやパスワードがコード中にハードコードされていないか事前に確認。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">一時的チャットモードを活用する</strong>
+                            <p class="mb-0 text-sm">
+                                機密性の高い質問をするときは、ChatGPTの一時的チャット（Temporary Chat）や、
+                                シークレットモードでの利用を習慣にしましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">5</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">職場のアカウントと個人のアカウントを分ける</strong>
+                            <p class="mb-0 text-sm">
+                                業務でAIを使う場合、個人のアカウントではなく、業務用のアカウントを使用しましょう。
+                                会社が契約しているEnterpriseプランであれば、データの学習利用が防止されているケースが多いです。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">6</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">プライバシーポリシーの変更に注意する</strong>
+                            <p class="mb-0 text-sm">
+                                AIサービスのプライバシーポリシーは頻繁に変更されます。少なくとも数ヶ月に一度は、
+                                使用しているサービスのプライバシーポリシーを確認する習慣を持ちましょう。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="flex items-start gap-3">
+                        <span class="step-number">7</span>
+                        <div>
+                            <strong class="block text-navy-900 mb-1">大事なデータはローカルLLMの導入を検討する</strong>
+                            <p class="mb-0 text-sm">
+                                どうしても機密情報をAIで処理する必要があるなら、ローカルLLMの導入を本格的に検討しましょう。
+                                完全オフラインで動作するAIなら、データが外部に漏れるリスクは事実上ゼロです。
+                                技術的なハードルはありますが、一度設定してしまえば安全に使い続けられます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. まとめ -->
+                <h2 id="conclusion">まとめ：賢く使うために知っておくべきこと</h2>
+                <p>
+                    AIチャットは非常に便利なツールですが、<strong>「何でも教えてくれる便利な機械」ではなく「あなたの会話をすべて記録しているサービス」</strong>であるという現実を忘れてはいけません。
+                </p>
+                <p>
+                    この記事で最も伝えたかったことは、たった3つです：
+                </p>
+                <ol>
+                    <li><strong>設定を変えよう</strong> — 会話履歴の保存をオフにし、過去のデータを削除する。たったこれでデータ収集の大部分を防げます。</li>
+                    <li><strong>個人情報を入れない</strong> — 名前、住所、金融情報、パスワードは絶対に入力しない。抽象化して質問する習慣をつけましょう。</li>
+                    <li><strong>目的に応じて使い分ける</strong> — 日常的な相談はChatGPT/Gemini（設定済み）、機密情報はローカルLLMや一時的チャット、業務はEnterpriseプラン。</li>
+                </ol>
+                <p>
+                    AI技術は日々進化していますが、プライバシーを守る姿勢は変わりません。
+                    ぜひ今から、設定の見直しと安全な使い方を始めてみてください。
+                </p>
+
+                <div class="bg-navy-50 border border-navy-200 rounded-xl p-6 mt-8">
+                    <h3 class="text-sm font-bold text-navy-900 flex items-center gap-2 mb-3">
+                        <i data-lucide="link" class="w-4 h-4 text-brand-600"></i>
+                        関連記事
+                    </h3>
+                    <ul class="text-sm space-y-2">
+                        <li>
+                            <a href="001-tracking-prevention.html" class="text-brand-600 hover:text-brand-500">第1回：トラッキングを防ぐには？ 手軽な方法でプライバシーを守る</a>
+                            <span class="text-navy-400 text-xs"> — Firefox + uBlock Originの導入方法</span>
+                        </li>
+                        <li>
+                            <a href="002-search-engine-privacy.html" class="text-brand-600 hover:text-brand-500">第2回：検索エンジンはあなたの何を知っているのか？</a>
+                            <span class="text-navy-400 text-xs"> — Google/Bingのプライバシー設定と代替検索エンジン</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="text-sm text-navy-500 border-t border-navy-200 pt-4 mt-8">
+                    文責：運営者倫理アライアンス（OEA） 編集部<br>
+                    公開：2026年5月27日
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-navy-900 text-white border-t border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="../favicon.ico" alt="運営者倫理アライアンス ロゴ" class="w-9 h-9 rounded-lg object-contain bg-white p-0.5">
+                        <span class="text-base font-bold text-white tracking-wider">運営者倫理アライアンス</span>
+                    </div>
+                    <p class="text-xs text-navy-300 leading-relaxed max-w-sm">
+                        OEAは、多様化するインターネットサービスにおいて、開発者や事業者が利用者の尊厳、プライバシー、持続可能性に責任を持つ世界を目指します。
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">ナビゲーション</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><a href="../index.html#about" class="hover:text-white transition-colors">概要</a></li>
+                        <li><a href="../index.html#charter" class="hover:text-white transition-colors">倫理憲章</a></li>
+                        <li><a href="../index.html" class="hover:text-white transition-colors">記事一覧</a></li>
+                        <li><a href="../index.html#members" class="hover:text-white transition-colors">参加企業・団体</a></li>
+                        <li><a href="../index.html#join" class="hover:text-white transition-colors">アライアンス加入</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-brand-500">お問い合わせ・リンク</h4>
+                    <ul class="space-y-2 text-xs text-navy-300">
+                        <li><span class="block">運営者倫理アライアンス 事務局</span></li>
+                        <li><span class="block">初回制定：2026年5月27日</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-navy-800 text-center text-xs text-navy-400">
+                &copy; 2026 Operator Ethics Alliance (OEA). All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
